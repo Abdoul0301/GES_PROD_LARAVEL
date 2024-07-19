@@ -64,13 +64,9 @@ class CategorieController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Categorie $categorie): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
+    public function edit(Categorie $categorie)
     {
-        return view('admin.categories.form',
-            [
-                'category' => $categorie,
-            ]
-        );
+        return response()->json($categorie);
     }
 
     /**
@@ -107,8 +103,8 @@ class CategorieController extends Controller
     }
     public function filtre(String $id)
     {
-        $categories = \App\Models\Categorie::all();
-        $produits = \App\Models\Produit::where('categorie_id', $id)->get();
-        return response()->json($categories,$produits);
+
+        $categories= \App\Models\Categorie::with('produits')->find($id);
+        return response()->json($categories);
     }
 }

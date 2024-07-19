@@ -24,7 +24,7 @@ class PanierController extends Controller
      */
     public function create()
     {
-        //
+      //
     }
 
     /**
@@ -63,18 +63,19 @@ class PanierController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Panier $panier)
+    public function destroy(String $id)
     {
-        $panier->delete();
-        return redirect()->route('paniers.index');
+        $panier=Panier::find($id);
+       $pan= $panier->delete();
+        return response()->json($pan);
     }
-    public function ajoute(Produit $produit)
+    public function ajoute(string $id)
     {
-        Panier::create([
-            'produit_id' => $produit->id,
+        $panier=Panier::create([
+            'produit_id' => $id,
             'quantite' => 1
         ]);
-        return redirect()->route('produits.index');
+        return response()->json($panier);
     }
     public function modifier(Request $request, Panier $panier)
     {
@@ -83,5 +84,11 @@ class PanierController extends Controller
             'quantite' => $quant
         ]);
         return redirect()->route('paniers.index');
+    }
+    public function compte()
+    {
+        $nbre=Panier::count();
+        return response()->json($nbre);
+
     }
 }

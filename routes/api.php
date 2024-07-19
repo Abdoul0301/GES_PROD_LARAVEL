@@ -34,7 +34,8 @@ Route::post('/panier/modifier/{panier}', [PanierController::class, 'modifier'])-
 
 
 Route::get('/panier/ajoute/{produit}' ,[PanierController::class, 'ajoute'])
-    ->name('panier.ajoute')->middleware('auth');
+    ->name('panier.ajoute');
+Route::get('panier/compte', [PanierController::class, 'compte']);
 
 
 
