@@ -7,6 +7,7 @@ use App\Models\Commande;
 use App\Http\Requests\StoreCommandeRequest;
 use App\Http\Requests\UpdateCommandeRequest;
 use App\Models\Panier;
+use App\Models\Produit_Commande;
 use App\Models\Stock;
 use App\Models\User;
 
@@ -73,16 +74,21 @@ class CommandeController extends Controller
             'montant'=>$input['montant']
         ]);
 
-//        $paniers=Panier::with('produit')->get();
-//        foreach ($paniers as $panier) {
-//            $stock=$panier->produit->getstock();
-//            $newstock=$stock->quantite-$panier->quantite;
-//            $stock->update(['quantite'=>$newstock]);
+        $paniers=Panier::with('produit')->get();
+        foreach ($paniers as $panier) {
+            Produit_Commande::create([
+                'commande_id'=>$commande->id,
+                'produit_id'=>$panier->produit_id,
+                'quantite'=>$panier->quantite
+            ]);
+            $stock=$panier->produit->getstock();
+            $newstock=$stock->quantite-$panier->quantite;
+            $stock->update(['quantite'=>$newstock]);
 //             $client=Client::find($commande->client_id);
 //            $client->notify(new \App\Notifications\SendClientnotification($panier->produit));
-//            $panier->delete();
-//
-//        }
+            $panier->delete();
+
+        }
 
         return response()->json($commande);
 

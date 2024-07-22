@@ -15,8 +15,11 @@ class PanierController extends Controller
      */
     public function index()
     {
-        $paniers=Panier::with('produit')->get();
-        return response()->json($paniers);
+            $paniers=Panier::with('produit')->get();
+            foreach ($paniers as $panier) {
+                $panier->produit->load('stock');
+            }
+            return response()->json($paniers);
     }
 
     /**

@@ -23,6 +23,9 @@ class ProduitController extends Controller
     {
         $produits = Produit::with('categorie')
             ->get();
+        foreach ($produits as $produit) {
+            $produit->load('stock');
+        }
       return response()->json($produits);
     }
 
