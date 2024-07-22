@@ -13,6 +13,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
+use PhpParser\Node\Scalar\String_;
 
 class ProduitController extends Controller
 {
@@ -93,11 +94,10 @@ class ProduitController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Produit $produit)
+    public function show(String  $id)
     {
-     $produit->load('categorie');
-     $produits=Produit::where('categorie_id', $produit->categorie_id)->get();
-        return view('products.show', compact('produit','produits'));
+     $produit=Produit::with('categorie')->find($id);
+        return response()->json($produit);
     }
 
     /**
