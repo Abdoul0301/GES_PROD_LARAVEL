@@ -87,10 +87,11 @@ class CommandeController extends Controller
             $newstock=$stock->quantite-$panier->quantite;
             $stock->update(['quantite'=>$newstock]);
 //             $client=Client::find($commande->client_id);
-//            $client->notify(new \App\Notifications\SendClientnotification($panier->produit));
             $panier->delete();
 
         }
+        $client->notify(new \App\Notifications\SendClientnotification($commande));
+
 
         return response()->json($commande);
 
