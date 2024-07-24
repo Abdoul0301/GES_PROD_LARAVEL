@@ -97,6 +97,7 @@ class ProduitController extends Controller
     public function show(String  $id)
     {
      $produit=Produit::with('categorie')->find($id);
+        $produit->load('stock');
         return response()->json($produit);
     }
 

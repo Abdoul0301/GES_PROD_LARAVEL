@@ -102,4 +102,9 @@ class UserController extends Controller
         }
         return response()->json(['error' => 'Unauthorised'], 401);
     }
+    public function logout()
+    {
+        Auth::logout();
+        return response()->json(['message' => 'Successfully logged out']);
+    }
 }

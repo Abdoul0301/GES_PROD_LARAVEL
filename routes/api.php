@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+
 });
 
 
@@ -36,6 +37,7 @@ Route::post('/panier/modifier/{panier}', [PanierController::class, 'modifier'])-
 Route::get('/panier/ajoute/{produit}' ,[PanierController::class, 'ajoute'])
     ->name('panier.ajoute');
 Route::get('panier/compte', [PanierController::class, 'compte']);
+Route::put('commandes/terminer/{commande}', [CommandeController::class, 'terminer']);
 
 
 
@@ -57,11 +59,11 @@ Route::name('client.')->group(function () {
 
 //Auth::routes();
 Route::post('/login',[UserController::class,'login']);
+Route::get('/logout', [UserController::class, 'logout']);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('/admin/dashboard', [DashboardController::class, 'index'])
-    ->name('dashboard')->middleware('auth');
+Route::get('/admin/dashboard', [DashboardController::class, 'index']);
 Route::get('/filtre/{id}', [CategorieController::class, 'filtre'])->name('filtre');
 
 Route::get('/recettes', function (){
@@ -70,3 +72,4 @@ Route::get('/recettes', function (){
 
 Route::get('/mes-produits', [ProduitController::class, 'myProducts'])
     ->name('mes-produits')->middleware('auth');
+

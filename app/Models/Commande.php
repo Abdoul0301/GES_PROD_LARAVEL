@@ -18,7 +18,7 @@ class Commande extends Model
         'client_id',
         'num_commande',
         'montant',
-        // 'statut',
+         'statut',
     ];
 
     public function client(): BelongsTo
@@ -28,6 +28,6 @@ class Commande extends Model
 
     public function produits(): HasMany
     {
-        return $this->hasMany(Produit::class);
+        return $this->hasMany(Produit_Commande::class);
     }
 }

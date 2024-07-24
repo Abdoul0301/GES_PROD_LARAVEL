@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Commande;
 use App\Models\Produit;
 use App\Models\User;
 use App\Notifications\ExpirationMessage;
@@ -9,33 +10,32 @@ use App\Notifications\ExpirationSoonMessage;
 use Auth;
 use DateInterval;
 use DateTime;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
-use Illuminate\Foundation\Application;
-use Illuminate\Http\Request;
-use Spatie\Analytics\Facades\Analytics;
-use Spatie\Analytics\Period;
+
 
 class DashboardController extends Controller
 {
 
-    public function index(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
+    public function index()
     {
-        //$analyticsData = Analytics::fetchVisitorsAndPageViews(Period::days(7));
-        if (!auth()->check()) {
-            return view('login');
-        }
-        $user_count = User::count();
         $produit_count = Produit::count();
-        $use_all = User::all();
-        $this->expirationAlert();
-        $this->soonExpirationAlert();
-        return view('admin.dashboard.index', [
-            //'analyticsData' => $analyticsData,
-            'user_count' => $user_count,
-            'user_all' => $use_all,
-            'produit_count' => $produit_count
-        ]);
+        $commandes_count = Commande::count();
+        $commandes_terminer = Commande::where('statut', 'terminer')->count();
+        $produits=Produit::all();
+        $stock_total = 0;
+        foreach ($produits as $produit) {
+            $produit->load('stock');
+
+            foreach ($produit->stock as $stock) {
+                $stock_total += $stock->quantite;
+            }
+
+        }
+
+
+        return response()->json(['produit_count' => $produit_count,
+            'commandes_count' => $commandes_count,
+            'commandes_terminer' => $commandes_terminer,
+            'stock_total' => $stock_total]);
     }
 
     public function expirationAlert(): void

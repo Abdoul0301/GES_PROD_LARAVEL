@@ -20,7 +20,7 @@ class CategorieController extends Controller
     public function index() {
         try {
 
-            $categories = Categorie::all();
+            $categories = Categorie::with('produits')->get();
             return response()->json($categories);
 
         }catch (\Exception $e) {

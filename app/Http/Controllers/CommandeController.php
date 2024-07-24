@@ -19,7 +19,8 @@ class CommandeController extends Controller
     public function index()
     {
         try {
-        $commandes=Commande::all();
+        $commandes=Commande::with('client')->get();
+
             return response()->json($commandes);
         } catch (\Exception $e) {
             return response()->json([
@@ -71,7 +72,8 @@ class CommandeController extends Controller
        $commande= Commande::create([
             'num_commande'=>$matricule_commande,
             'client_id'=>$client->id,
-            'montant'=>$input['montant']
+            'montant'=>$input['montant'],
+            'statut' =>"encours"
         ]);
 
         $paniers=Panier::with('produit')->get();
@@ -79,7 +81,7 @@ class CommandeController extends Controller
             Produit_Commande::create([
                 'commande_id'=>$commande->id,
                 'produit_id'=>$panier->produit_id,
-                'quantite'=>$panier->quantite
+                'quantite'=>$panier->quantite,
             ]);
             $stock=$panier->produit->getstock();
             $newstock=$stock->quantite-$panier->quantite;
@@ -97,9 +99,12 @@ class CommandeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Commande $commande)
+    public function show(String  $id)
     {
-        //
+        $commande=Commande::with('client')->find($id);
+        $commande->load('produits');
+        $commande->load('produits.produit');
+        return response()->json($commande);
     }
 
     /**
@@ -124,5 +129,11 @@ class CommandeController extends Controller
     public function destroy(Commande $commande)
     {
         //
+    }
+    public function terminer(String $id)
+    {
+        $commande=Commande::find($id);
+        $commande->update(['statut'=>'terminer']);
+        return response()->json($commande);
     }
 }
